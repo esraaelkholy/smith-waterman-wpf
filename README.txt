@@ -11,3 +11,4 @@ Make the application prettier
 Don't waste time in having variables that only need to be used once
 Dropdowns for selecting gap/match and affine gap extension coefficients
 Rename variables for the sake of legibility and not being stupid ("int gapgrower"???)
+Distinguish between insertions/deletions?
