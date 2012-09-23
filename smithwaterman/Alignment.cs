@@ -190,8 +190,10 @@ namespace smithwaterman
         private string[] traceSequences(List<int[]> trace, char[] achars, char[] bchars)
         {
             string[] alignments = new string[2];
-            List<char> alist = new List<char>(); //figure out how to use stringbuffers later
-            List<char> blist = new List<char>();
+            
+            //stack prevents editors from doing funny business with traceSequences
+            Stack<char> astack = new Stack<char>();
+            Stack<char> bstack = new Stack<char>();
 
             int prevn = 0;
             int prevm = 0;
@@ -202,8 +204,8 @@ namespace smithwaterman
                 {
                     int n = coords[0] - 1;
                     int m = coords[1] - 1;
-                    alist.Add(achars[n]);
-                    blist.Add(bchars[m]);
+                    astack.Push(achars[n]);
+                    bstack.Push(bchars[m]);
                     prevn = n;
                     prevm = m;
                 }
@@ -212,22 +214,20 @@ namespace smithwaterman
                     int n = coords[0] - 1;
                     int m = coords[1] - 1;
                     if (n != prevn)
-                        alist.Add(achars[n]);
+                        astack.Push(achars[n]);
                     else
-                        alist.Add('-');
+                        astack.Push('-');
                     if (m != prevm)
-                        blist.Add(bchars[m]);
+                        bstack.Push(bchars[m]);
                     else
-                        blist.Add('-');
+                        bstack.Push('-');
                     prevn = n;
                     prevm = m;
                 }
             }
-            alist.Reverse();
-            blist.Reverse();
 
-            alignments[0] = string.Join("", alist.ToArray());
-            alignments[1] = string.Join("", blist.ToArray());
+            alignments[0] = stackchartoString(astack);
+            alignments[1] = stackchartoString(bstack);
 
             return alignments;
         }
@@ -276,6 +276,17 @@ namespace smithwaterman
 
             alignments = traceBack(m, n, achars, bchars);
             return alignments;
+        }
+
+        private string stackchartoString(Stack<char> stack)
+        {
+            string outstring="";
+            foreach (char ch in stack)
+            {
+                outstring += ch;
+            }
+
+            return outstring;
         }
     }
 }
